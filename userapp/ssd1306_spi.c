@@ -1,6 +1,5 @@
 /*
  * ssd1306_spi.c
- * Introduction to timers in FreeRTOS
  * author: Venkata Naga Ravikiran Bulusu
  *
  */

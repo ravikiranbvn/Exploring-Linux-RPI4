@@ -1,3 +1,14 @@
+# ssd1306_spi.py
+# author: Venkata Naga Ravikiran Bulusu
+
+# OLED GND → Pin 6 (GND) on Raspberry Pi
+# OLED VCC → Pin 1 (3.3V) on Raspberry Pi
+# OLED D0 (SCK/CLK) → Pin 23 (SCLK) on Raspberry Pi
+# OLED D1 (MOSI) → Pin 19 (MOSI) on Raspberry Pi
+# OLED RES → Pin 18 (GPIO 24) on Raspberry Pi
+# OLED DC → Pin 22 (GPIO 25) on Raspberry Pi
+# OLED CS → Pin 24 (CE0) on Raspberry Pi
+
 import board
 import digitalio
 import adafruit_ssd1306

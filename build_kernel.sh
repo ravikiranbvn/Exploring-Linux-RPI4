@@ -15,7 +15,7 @@ JOBS=$(nproc)
 echo "Building the Linux kernel..."
 cd $KERNEL_DIR
 
-make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j$JOBS Image dtbs modules
+make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j$JOBS Image dtbs modules modules_prepare
 
 if [ $? -ne 0 ]; then
     echo "Kernel build failed!"

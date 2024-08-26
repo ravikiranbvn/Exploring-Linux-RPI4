@@ -1,3 +1,9 @@
+/*
+ * led_gpio17.c
+ * author: Venkata Naga Ravikiran Bulusu
+ *
+ */
+
 #include <gpiod.h>
 #include <stdio.h>
 #include <unistd.h>

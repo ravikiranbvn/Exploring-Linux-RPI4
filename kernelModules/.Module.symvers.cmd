@@ -1,0 +1,1 @@
+savedcmd_/home/ravi/dw/repos/Exploring-Linux-RPI4/kernelModules/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/ravi/dw/repos/Exploring-Linux-RPI4/kernelModules/Module.symvers -T /home/ravi/dw/repos/Exploring-Linux-RPI4/kernelModules/modules.order -i Module.symvers -e 
