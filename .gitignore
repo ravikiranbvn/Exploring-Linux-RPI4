@@ -1,2 +1,11 @@
 kernel_headers/
 kernel/
+kernelModules/*.ko 
+kernelModules/*.ko.cmd
+kernelModules/*.mod.cmd
+kernelModules/*.mod.o.cmd
+kernelModules/*.mod
+kernelModules/*.mod.c
+kernelModules/*.mod.o
+kernelModules/*.o
+kernelModules/Makefile
