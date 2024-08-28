@@ -1,3 +1,9 @@
+/*
+ * hello_world.c
+ * author: Venkata Naga Ravikiran Bulusu
+ *
+ */
+
 #include <linux/module.h>  // Needed for all kernel modules
 #include <linux/kernel.h>  // Needed for KERN_INFO
 #include <linux/init.h>    // Needed for the macros
@@ -18,5 +24,5 @@ module_init(hello_init);
 module_exit(hello_exit);
 
 MODULE_LICENSE("GPL");  // Specify the license of the module
-MODULE_AUTHOR("Your Name");  // Author of the module
+MODULE_AUTHOR("ravi");  // Author of the module
 MODULE_DESCRIPTION("A simple Hello World kernel module");  // Short description

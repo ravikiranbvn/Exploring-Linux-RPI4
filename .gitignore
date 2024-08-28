@@ -10,3 +10,4 @@ kernelModules/*.mod.o
 kernelModules/*.o
 kernelModules/Makefile
 kernelModules/.*
+.vscode/

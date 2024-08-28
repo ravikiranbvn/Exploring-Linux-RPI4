@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "kernel.h": "c"
+        "kernel.h": "c",
+        "interrupt.h": "c",
+        "module.h": "c"
     }
 }
