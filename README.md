@@ -1,4 +1,4 @@
-# Explore-Linux-RPI4
+# Exploring-Linux-RPI4
 
 Build and copy kernel:
 - https://www.raspberrypi.com/documentation/computers/linux_kernel.html
