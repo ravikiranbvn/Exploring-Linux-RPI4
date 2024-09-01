@@ -9,6 +9,7 @@
  * LED is logged in the kernel log (dmesg) after each button press.
  * 
  * connections: https://www.thetips4you.com/wp-content/uploads/2019/06/LED-and-Push-Button.png
+ * interchange the GPIO pin 17 and GPIO pin 18 in the above diagram
  */
 
 #include <linux/module.h>
