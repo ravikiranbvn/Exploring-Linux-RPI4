@@ -10,4 +10,6 @@ kernelModules/*.mod.o
 kernelModules/*.o
 kernelModules/Makefile
 kernelModules/.*
+kernelModules/Module.symvers
+kernelModules/modules.order
 .vscode/
