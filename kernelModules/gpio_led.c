@@ -1,7 +1,25 @@
 /*
  * gpio_led.c
- * author: Venkata Naga Ravikiran Bulusu
+ * author: Venkata Naga Ravikiran Bulusu 
+ * 
+ * This driver controls an LED using GPIO15.
  *
+ * Physical Connections:
+ *
+ * 1. Connect GPIO15 (physical pin 10) → series resistor (220–330Ω)
+ * 2. Connect resistor → LED anode (+, long leg)
+ * 3. Connect LED cathode (-, short leg) → GND (e.g., pin 6)
+ *
+ * Important:
+ * - Always use a resistor to avoid damaging the LED or GPIO
+ * - GPIO numbering in code uses BCM (GPIO15 = pin 10)
+ *
+ * Usage:
+ * - Load module → device: /dev/elrpi4_led_gpio_driver
+ * - Turn ON     → echo 1 > /dev/elrpi4_led_gpio_driver
+ * - Turn OFF    → echo 0 > /dev/elrpi4_led_gpio_driver
+ *
+ * ============================
  */
 
 #include <linux/module.h>
