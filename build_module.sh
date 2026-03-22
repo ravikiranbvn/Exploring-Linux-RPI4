@@ -1,74 +1,85 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Check if a module name is provided
-if [ -z "$1" ]; then
+if [ $# -lt 1 ]; then
     echo "Usage: $0 <module_name> [build|clean]"
     exit 1
 fi
 
-MODULE_NAME=$1
-COMMAND=${2:-build}  # Default command is 'build' if not provided
+MODULE_NAME="$1"
+COMMAND="${2:-build}"
 
-# Set the cross-compiler and architecture
-CROSS_COMPILE=aarch64-linux-gnu-
-ARCH=arm64
+ARCH="arm64"
+CROSS_COMPILE="aarch64-linux-gnu-"
 
-# Paths
-KERNEL_DIR=$(pwd)/kernel  # Path to the full kernel source directory
-MODULE_DIR=$(pwd)/kernelModules  # Path to the custom module directory
+ROOT_DIR="$(pwd)"
+KERNEL_DIR="$ROOT_DIR/kernel"
+SRC_DIR="$ROOT_DIR/kernelModules"
+BUILD_ROOT="$ROOT_DIR/build/modules"
+MODULE_SRC="$SRC_DIR/${MODULE_NAME}.c"
+MODULE_BUILD_DIR="$BUILD_ROOT/$MODULE_NAME"
 
-# Check if the module source file exists (only when building)
-if [ ! -f "$MODULE_DIR/$MODULE_NAME.c" ] && [ "$COMMAND" != "clean" ]; then
-    echo "Error: Module source file $MODULE_DIR/$MODULE_NAME.c does not exist."
+if [ ! -d "$KERNEL_DIR" ]; then
+    echo "Error: kernel directory not found: $KERNEL_DIR"
     exit 1
 fi
 
-# Create the Makefile dynamically
-echo "Creating Makefile for $MODULE_NAME..."
+if [ ! -d "$SRC_DIR" ]; then
+    echo "Error: module source directory not found: $SRC_DIR"
+    exit 1
+fi
 
-cat <<EOL > $MODULE_DIR/Makefile
-# Name of the module
-obj-m += $MODULE_NAME.o
+case "$COMMAND" in
+    build)
+        if [ ! -f "$MODULE_SRC" ]; then
+            echo "Error: module source file not found: $MODULE_SRC"
+            exit 1
+        fi
 
-# Path to the kernel headers or build directory
-KDIR := $KERNEL_DIR  # Use the full kernel source directory
+        mkdir -p "$MODULE_BUILD_DIR"
 
-# Command to build the module
+        echo "Preparing build directory: $MODULE_BUILD_DIR"
+
+        # Copy only the needed source into isolated build directory
+        cp "$MODULE_SRC" "$MODULE_BUILD_DIR/"
+
+        # Create Makefile inside build directory
+        cat > "$MODULE_BUILD_DIR/Makefile" <<EOF
+obj-m += ${MODULE_NAME}.o
+
+KDIR := ${KERNEL_DIR}
+
 all:
-	\$(MAKE) -C \$(KDIR) M=\$(PWD) modules
+	\$(MAKE) -C \$(KDIR) M=\$(CURDIR) ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} modules
 
-# Command to clean the build files
 clean:
-	\$(MAKE) -C \$(KDIR) M=\$(PWD) clean
-EOL
+	\$(MAKE) -C \$(KDIR) M=\$(CURDIR) ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} clean
+EOF
 
-# Execute the build or clean command
-cd $MODULE_DIR
+        echo "Building module: $MODULE_NAME"
+        make -C "$MODULE_BUILD_DIR" all -j"$(nproc)"
 
-if [ "$COMMAND" == "build" ]; then
-    echo "Building the $MODULE_NAME module..."
-    make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j$(nproc)
+        echo
+        echo "Build successful."
+        echo "Artifacts:"
+        echo "  $MODULE_BUILD_DIR/${MODULE_NAME}.ko"
+        ;;
+    clean)
+        if [ -d "$MODULE_BUILD_DIR" ]; then
+            if [ -f "$MODULE_BUILD_DIR/Makefile" ]; then
+                echo "Cleaning kernel module outputs for: $MODULE_NAME"
+                make -C "$MODULE_BUILD_DIR" clean || true
+            fi
 
-    if [ $? -ne 0 ]; then
-        echo "Module build failed!"
+            echo "Removing build directory: $MODULE_BUILD_DIR"
+            rm -rf "$MODULE_BUILD_DIR"
+        else
+            echo "Nothing to clean for module: $MODULE_NAME"
+        fi
+        ;;
+    *)
+        echo "Unknown command: $COMMAND"
+        echo "Usage: $0 <module_name> [build|clean]"
         exit 1
-    fi
-
-    echo "Module build completed successfully."
-
-elif [ "$COMMAND" == "clean" ]; then
-    echo "Cleaning the $MODULE_NAME module..."
-    make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE clean
-
-    if [ $? -ne 0 ]; then
-        echo "Module clean failed!"
-        exit 1
-    fi
-
-    echo "Module clean completed successfully."
-
-else
-    echo "Unknown command: $COMMAND"
-    echo "Usage: $0 <module_name> [build|clean]"
-    exit 1
-fi
+        ;;
+esac
